@@ -8,6 +8,7 @@ var eventSchema = new Schema({
     address: {type: String, default: ''},
     organizer: {type: Schema.Types.ObjectId, ref: 'Organizer'},
     date: Date
+   
 },
     {timestamps: {createdAt: 'created_at'}}
 );
