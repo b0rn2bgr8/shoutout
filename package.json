@@ -1,0 +1,22 @@
+{
+  "name": "shoutout",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.3",
+    "email-verification": "^0.4.6",
+    "express": "^4.15.3",
+    "helmet": "^3.6.1",
+    "mongoose": "^4.11.1",
+    "morgan": "^1.8.2",
+    "passport": "^0.3.2"
+  }
+}
