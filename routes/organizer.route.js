@@ -56,7 +56,7 @@ router.post('/login-org', function(req, res, next) {
             }
             res.status(200).json({
                 status: 'Login successful!',
-                newOrganizer: user
+                user: user
             });
         });
     })(req, res, next);

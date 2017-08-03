@@ -5,9 +5,9 @@ var fs = require('fs-extra');
 var config = require('../config/secret');
    // Your mLabs connection string
 var url = config.database;
-var multer = require('multer')
-var util = require('util')
-var upload = multer({limits: {fileSize: 2000000 },dest:'/uploads/'})
+var multer = require('multer');
+var util = require('util');
+var upload = multer({limits: {fileSize: 2000000 },dest:'/uploads/'});
  
 // Default route http://localhost:3000/
 router.get('/uploadpicture', function(req, res){ res.render('/uplodpicture'); });

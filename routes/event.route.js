@@ -17,11 +17,6 @@ router.get('events/:id', function(req, res, next){
         res.json(event);
     });
 });
-router.get('/create-event',function(req,res,next){
-    if(err) return next(err);
-
-    res.render('/create-event');
-});
 
 router.post('/create-event', function(req, res, next){
     
@@ -48,9 +43,7 @@ router.put('event/:id', function(req, res, next){
 
     event.title = req.body.title;
     event.venue = req.body.venue;   
-    event.address = req.body.address; 
-   // event.organizer = req.body.organizer;
-    //event.date = req.body.date;
+    event.address = req.body.address;    
 
         user.save(function(err){
             if(err){return next(err);}
