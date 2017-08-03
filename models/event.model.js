@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var eventSchema = new Schema({
-    title: {type: String},
+    title: {type: String,},
     venue: {type: String, default: ''},
     location: [Number],
     address: {type: String, default: ''},

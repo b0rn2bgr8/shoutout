@@ -16,7 +16,9 @@ var userSchema = new Schema({
     city: {type: String, default: ''},
     province: {type: String, default: ''},
     location: [Number],
-    date_of_birth: {type: Date, default: ''}
+	date_of_birth: {type: Date, default: ''},
+	email: {type: String, default: ''},
+	password: {type: String, default: ''}
 },{timestamps: {createdAt: 'created_at'}});
 
 userSchema.pre('save', function(next){

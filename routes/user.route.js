@@ -7,7 +7,7 @@ var User = require('../models/user.model');
 router.get('/', function(req, res, next){
     User.find(function(err, users){
         if(err){return next(err);}
-
+        
         res.json(users);
     });
 });
@@ -15,7 +15,7 @@ router.get('/', function(req, res, next){
 router.get('/:id', function(req, res, next){
     User.findById({_id: req.params.id}, function(err, user){
         if(err){return next(err);}
-
+        
         res.json(user);
     });
 });
@@ -26,8 +26,7 @@ router.post('/signup', function(req, res, next){
     var password = req.body.password;
     var newUser = new User({
         email: email,
-        password: password,
-        username: uname     
+        password: password,           
     });
 
     newUser.save(function(err){
@@ -65,6 +64,19 @@ router.put('/:id', function(req, res, next){
     User.findById({_id: req.params.id}, function(err, user){
         if(err){return next(err);}
 
+        user.firstname = req.body.firstname; 
+        user.lastname = req.body.lastname; 
+        user.username = req.body.username;        
+        user.picture = req.body.picture;
+        user.bio = req.body.bio; 
+        user.address1 = req.body.address1;
+        user.address2 = req.body.address2;
+        user.address3 = req.body.address3; 
+        user.suburb = req.body.suburb;
+        user.city = req.body.city;
+        user.province = req.body.province;         
+        user.date_of_birth = req.body.date_of_birth;         
+        
 
         user.save(function(err){
             if(err){return next(err);}
@@ -72,5 +84,16 @@ router.put('/:id', function(req, res, next){
         });
     });
 });
+/*router.delete('/:id', function(req, res, next){
+    User.findById({_id: req.params.id}, function(err, user){
+        if(err){return next(err);}               
+        
+
+        user.save(function(err){
+            if(err){return next(err);}
+            res.json({response: "User Removed"});
+        });
+    });
+});*/
 
 module.exports = router;
