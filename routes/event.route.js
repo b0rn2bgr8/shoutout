@@ -38,14 +38,14 @@ router.post('/create-event', function(req, res, next){
 });
 
 router.put('event/:id', function(req, res, next){
-    Event.findById({_id: req.params.id}, function(err, user){
+    Event.findById({_id: req.params.id}, function(err, event){
         if(err){return next(err);}
 
     event.title = req.body.title;
     event.venue = req.body.venue;   
     event.address = req.body.address;    
 
-        user.save(function(err){
+        event.save(function(err){
             if(err){return next(err);}
             res.json({response: "Profile Updated"});
         });

@@ -39,16 +39,16 @@ router.post('/signup-org', function(req, res, next){
 
 router.post('/login-org', function(req, res, next) {
     
-    passport.authenticate('local-login', function(err, user, info) {
+    passport.authenticate('local-login', function(err, organizer, info) {
         if (err) {
             return next(err);
         }
-        if (!user) {
+        if (!organizer) {
             return res.status(401).json({
                 err: info
             });
         }
-        req.logIn(user, function(err) {
+        req.logIn(organizer, function(err) {
             if (err) {
                 return res.status(500).json({
                     err: 'Could not log in user'
@@ -56,14 +56,14 @@ router.post('/login-org', function(req, res, next) {
             }
             res.status(200).json({
                 status: 'Login successful!',
-                user: user
+                newOrganizer: organizer
             });
         });
     })(req, res, next);
 });
 
-router.put('organizer/:id', function(req, res, next){
-    User.findById({_id: req.params.id}, function(err, user){
+router.put('/:id', function(req, res, next){
+    Organizer.findById({_id: req.params.id}, function(err, user){
         if(err){return next(err);}
 
     organizer.name = req.body.name;
@@ -78,7 +78,7 @@ router.put('organizer/:id', function(req, res, next){
     organizer.picture = req.body.picture;     
         
 
-        user.save(function(err){
+        organizer.save(function(err){
             if(err){return next(err);}
             res.json({response: "Profile Updated"});
         });
