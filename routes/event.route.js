@@ -1,54 +1,39 @@
-var router = require('express').Router();
-
 var Event = require('../models/event.model');
+var _ = require('lodash');
 
-router.get('/events',function(req,res,next){
-     Event.find(function(err, events){
-        if(err){return next(err);}
-        
-        res.json(events);
-    });
-});
+module.exports = function (router) {
 
-router.get('events/:id', function(req, res, next){
-    Event.findById({_id: req.params.id}, function(err, event){
-        if(err){return next(err);}
-        
-        res.json(event);
-    });
-});
-
-router.post('/create-event', function(req, res, next){
-    
-    var title = req.body.title;
-    var venue = req.body.venue;   
-    var address = req.body.address;   
-    
-
-    var newEvent = new Event({
-    title: title,
-    venue: venue,      
-    address: address          
-    });
-
-    newEvent.save(function(err){
-        if(err){return next(err);}
-        res.json({response: "success", user: newEvent});
-    });
-});
-
-router.put('event/:id', function(req, res, next){
-    Event.findById({_id: req.params.id}, function(err, user){
-        if(err){return next(err);}
-
-    event.title = req.body.title;
-    event.venue = req.body.venue;   
-    event.address = req.body.address;    
-
-        user.save(function(err){
-            if(err){return next(err);}
-            res.json({response: "Profile Updated"});
+    router.get('/event', function (req, res, next) {
+        Event.find(function (err, events) {
+            if (err) { return next(err); }
+            res.json(events);
         });
     });
-});
-module.exports = router
+
+    router.get('/event/:id', function (req, res, next) {
+        Event.findById({ _id: req.params.id }, function (err, event) {
+            if (err) { return next(err); }
+            res.json(event);
+        });
+    });
+
+    router.post('/event', function (req, res, next) {
+        var newEvent = new Event(req.body);
+        newEvent.save(function (err) {
+            if (err) { return next(err); }
+            res.json({ response: "success"});
+        });
+    });
+
+    router.put('/event/:id', function (req, res, next) {
+        Event.findById({ _id: req.params.id }, function (err, event) {
+            if (err) { return next(err); }
+
+            _.merge(event, req.body);
+            event.save(function (err) {
+                if (err) { return next(err); }
+                res.json({ response: "Event Updated" });
+            });
+        });
+    });
+}

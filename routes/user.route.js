@@ -1,99 +1,136 @@
-var router = require('express').Router();
 var passport = require('passport');
+var _ = require('lodash');
 var passportConf = require('../config/passport');
+var async = require('async');
 
 var User = require('../models/user.model');
 
-router.get('/', function(req, res, next){
-    User.find(function(err, users){
-        if(err){return next(err);}
-        
-        res.json(users);
-    });
-});
+module.exports = function (router) {
 
-router.get('/:id', function(req, res, next){
-    User.findById({_id: req.params.id}, function(err, user){
-        if(err){return next(err);}
-        
-        res.json(user);
-    });
-});
+    router.get('/user', function (req, res, next) {
+        User.find(function (err, users) {
+            if (err) { return next(err); }
 
-router.post('/signup', function(req, res, next){
-
-    var email = req.body.email;
-    var password = req.body.password;
-    var newUser = new User({
-        email: email,
-        password: password,           
+            res.json(users);
+        });
     });
 
-    newUser.save(function(err){
-        if(err){return next(err);}
-        res.json({response: "success", user: newUser});
-    });
-});
+    router.get('/user/:id', function (req, res, next) {
+        User.findById({ _id: req.params.id }, function (err, user) {
+            if (err) { return next(err); }
 
-router.post('/login', function(req, res, next) {
-    
-    passport.authenticate('local-login', function(err, user, info) {
-        if (err) {
-            return next(err);
-        }
-        if (!user) {
-            return res.status(401).json({
-                err: info
-            });
-        }
-        req.logIn(user, function(err) {
+            res.json(user);
+        });
+    });
+
+    router.post('/user/signup', function (req, res, next) {
+
+        var newUser = new User(req.body);
+
+        newUser.save(function (err) {
+            if (err) { return next(err); }
+            res.json({ response: "success", user: newUser });
+        });
+    });
+
+    router.post('/user/login', function (req, res, next) {
+
+        passport.authenticate('local-login', function (err, user, info) {
             if (err) {
-                return res.status(500).json({
-                    err: 'Could not log in user'
+                return next(err);
+            }
+            if (!user) {
+                return res.status(401).json({
+                    err: info
                 });
             }
-            res.status(200).json({
-                status: 'Login successful!',
-                user: user
+            req.logIn(user, function (err) {
+                if (err) {
+                    return res.status(500).json({
+                        err: 'Could not log in user'
+                    });
+                }
+                res.status(200).json({
+                    status: 'Login successful!',
+                    user: user
+                });
+            });
+        })(req, res, next);
+    });
+
+    router.put('/user/:id', function (req, res, next) {
+        User.findById({ _id: req.params.id }, function (err, user) {
+            if (err) { return next(err); }
+
+            _.merge(user, req.body);
+            user.save(function (err) {
+                if (err) { return next(err); }
+                res.json({ response: "Profile Updated" });
             });
         });
-    })(req, res, next);
-});
+    });
 
-router.put('/:id', function(req, res, next){
-    User.findById({_id: req.params.id}, function(err, user){
-        if(err){return next(err);}
-
-        user.firstname = req.body.firstname; 
-        user.lastname = req.body.lastname; 
-        user.username = req.body.username;        
-        user.picture = req.body.picture;
-        user.bio = req.body.bio; 
-        user.address1 = req.body.address1;
-        user.address2 = req.body.address2;
-        user.address3 = req.body.address3; 
-        user.suburb = req.body.suburb;
-        user.city = req.body.city;
-        user.province = req.body.province;         
-        user.date_of_birth = req.body.date_of_birth;         
+    router.put('/user/follow/:id', function(req, res, next){
+        async.waterfall([
+            function(callback){
+                User.findById({_id: req.params.id}, function(err, user){
+                    if(err){return next(err);}
+                    if(user.followers.indexOf(req.body.userId) >= 0){
+                        async.waterfall([
+                            function(callback){
+                                user.followers.splice(user.followers.indexOf(req.body.userId), 1);
+                                user.save(function(err){
+                                    if(err){return next(err);}
+                                    callback(null, user);
+                                });
+                            },
+                            function(followed, callback){
+                                User.findById({_id: req.body.userId}, function(err, user){
+                                    if(err){return next(err);}
+                                    user.following.splice(user.following.indexOf(followed._id), 1);
+                                    user.save(function(err){
+                                        if(err){return next(err);}
+                                        callback();
+                                    });
+                                });
+                            },
+                            function(){
+                                res.json({info: 'Unfollowed'});
+                            }
+                        ]);
+                    }else{
+                        async.waterfall([
+                            function(callback){
+                                user.followers.push(req.body.userId);
+                                user.save(function(err){
+                                    if(err){return next(err);}
+                                    callback(null, user);
+                                });
+                            },
+                            function(followed, callback){
+                                User.findById({_id: req.body.userId}, function(err, user){
+                                    user.following.push(user._id);
+                                    user.save(function(err){
+                                        if(err){return next(err);}
+                                        callback();
+                                    });
+                                });
+                            },
+                            function(){
+                                res.json({info: "followed"});
+                            }
+                        ]);
+                    }
+                });
+            }
+        ]);
         
+    });
 
-        user.save(function(err){
-            if(err){return next(err);}
-            res.json({response: "Profile Updated"});
+    router.delete('/user/:id', function (req, res, next) {
+        User.findByIdAndRemove({ _id: req.params.id }, function (err) {
+            if (err) { return next(err); }
+            res.json({ response: "User account removed" });
         });
     });
-});
-/*router.delete('/:id', function(req, res, next){
-    User.findById({_id: req.params.id}, function(err, user){
-        if(err){return next(err);}               
-        
-
-        user.save(function(err){
-            if(err){return next(err);}
-            res.json({response: "User Removed"});
-        });
-    });
-});*/
-
-module.exports = router;
+}

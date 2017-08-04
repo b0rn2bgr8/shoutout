@@ -15,7 +15,10 @@ var organizerSchema = new Schema({
     province: {type: String, default: ''},
     password: {type: String, default: ''},
     username: {type: String, default: ''},
-    picture: {type: String, default: ''}
+	picture: {type: String, default: ''},
+	followers: {type: Schema.Types.ObjectId, ref: 'Organizer'},
+	following: {type: Schema.Types.ObjectId, ref: 'Organizer'},
+	events: {type: Schema.Types.ObjectId, ref: 'Event'}
 },{timestamps: {createdAt: 'created_at'}});
 
 organizerSchema.pre('save', function(next){
