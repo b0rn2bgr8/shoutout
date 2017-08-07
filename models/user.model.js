@@ -22,6 +22,26 @@ var userSchema = new Schema({
 	following: [{type: Schema.Types.ObjectId, ref: 'User'}],
 	followers: [{type: Schema.Types.ObjectId, ref: 'User'}],
 	posts: [{type: Schema.Types.ObjectId, ref: 'Post'}],
+		fb: {
+		id: String,
+		access_token: String,
+		firstName: String,
+		lastName: String,
+		email: String
+	},
+	twitter: {
+		id: String,
+		token: String,
+		username: String,
+		displayName: String,		
+	},
+	google:{
+		id: String,
+		token: String,
+		username: String,
+		displayName: String,
+	}
+
 },{timestamps: {createdAt: 'created_at'}});
 
 userSchema.pre('save', function(next){

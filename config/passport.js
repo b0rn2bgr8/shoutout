@@ -2,6 +2,8 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var flash = require('express-flash');
 var User = require('../models/user.model');
+var facebook = require('./facebook');
+var twitter = require('./twitter');
 
 
 
@@ -40,4 +42,8 @@ exports.isAuthenticated = function(req, res, done) {
         return done();
     }
     res.json({ message: 'Unauthenticated' });
+
+    facebook(passport);
+    twitter(passport);
+    google(passport);
 }
