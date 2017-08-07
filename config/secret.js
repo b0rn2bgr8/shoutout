@@ -4,8 +4,8 @@ module.exports = {
     secretKey: 'Pa$$w0rd',
     
     facebook : {
-	appID : '<your_app_id>',
-	appSecret : '<your_app_secret>',
+	appID : '142383519685825',
+	appSecret : 'f6bc509d5ff2a989275f7176ceabc585',
 	callbackUrl : 'http://localhost:3000/login/facebook/callback'
     },
 
