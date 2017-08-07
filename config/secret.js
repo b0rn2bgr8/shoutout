@@ -6,13 +6,13 @@ module.exports = {
     facebook : {
 	appID : '142383519685825',
 	appSecret : 'f6bc509d5ff2a989275f7176ceabc585',
-	callbackUrl : 'http://localhost:3000/login/facebook/callback'
+	callbackUrl : 'http://localhost:81/login/facebook/callback'
     },
 
     twitter: {
 	apikey : '<your_api_key>',
 	apisecret : '<your_api_secret>',
-	callbackUrl : 'http://localhost:3000/login/twitter/callback'
+	callbackUrl : 'http://localhost:81/login/twitter/callback'
     },
 
     googleAuth: {
