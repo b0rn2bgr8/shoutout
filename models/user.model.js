@@ -19,7 +19,9 @@ var userSchema = new Schema({
     location: [Number],
 	date_of_birth: {type: Date, default: ''},
 	email: {type: String, default: ''},
-	password: {type: String, default: ''}
+	following: [{type: Schema.Types.ObjectId, ref: 'User'}],
+	followers: [{type: Schema.Types.ObjectId, ref: 'User'}],
+	posts: [{type: Schema.Types.ObjectId, ref: 'Post'}],
 },{timestamps: {createdAt: 'created_at'}});
 
 userSchema.pre('save', function(next){
