@@ -17,7 +17,7 @@ if (req.file == null) {
   res.render('/uploadpicture', { title:'Please select a picture file to submit!'});  
 } else {
  
-MongoClient.connect(config.database, function(err, db){
+MongoClient.connect(url, function(err, db){
   
    var newImg = fs.readFileSync(req.file.path);
   
