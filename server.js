@@ -51,6 +51,12 @@ function createPublicFileURL(storageName) {
     return `http://storage.googleapis.com/shoutout-fdf97/${encodeURIComponent(storageName)}`;
 
 }
+
+const gcFile = bucket.file(uploadTo); //get a handler to the uploaded file
+
+gcFile.exists((err,exists)=>console.log(err||exists));
+
+gcFile.delete((err,res)=>console.log(err||res));
 //////////////////////////////////////////////////////////////////////////
 
 mongoose.connect(config.database,function(err){
