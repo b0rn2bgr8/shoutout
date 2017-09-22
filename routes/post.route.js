@@ -1,8 +1,13 @@
-var _ = require('lodash');
-var async = require('async');
-var Post = require('../models/post.model');
-var Comment = require('../models/comment.model');
-var User = require('../models/user.model');
+const _ = require('lodash');
+const async = require('async');
+const Post = require('../models/post.model');
+const Comment = require('../models/comment.model');
+const User = require('../models/user.model');
+const Multer = require('multer');
+const multer = Multer({
+  storage: Multer.memoryStorage()
+});
+const impUpload = require('./imgUpload');
 
 module.exports = function (router) {
   router.get('/post', function (req, res, next) {
@@ -39,10 +44,16 @@ module.exports = function (router) {
       });
   });
 
-  router.post('/post', function (req, res, next) {
+  router.post('/post', multer.single('image'), impUpload.uploadToGcs, function (req, res, next) {
+    if(req.file && req.file.cloudStoragePublicUrl){
     async.waterfall([
       function (callback) {
-        var new_post = new Post(req.body);
+        var new_post = new Post({
+          body: req.body.postBody,
+          blob: req.file.cloudStoragePublicUrl,
+          owner: req.body.owner,
+          location: [parseFloat(req.body.latitude), parseFloat(req.body.longitude)]
+        });
 
         new_post.save(function (err) {
           if (err) { return next(err); }
@@ -55,12 +66,14 @@ module.exports = function (router) {
           user.posts.push(post._id);
           user.save(function (err) {
             if (err) { return next(err); }
-            res.json({ info: "Post created" });
+            res.json({ response: "Post created" });
           });
         });
       }
     ]);
-
+  }else{
+      res.json({response: "upload failed. try again"});
+  }
   });
 
   router.put('/post/:id', function (req, res, next) {
