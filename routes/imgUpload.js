@@ -4,7 +4,7 @@ const fs = require('fs')
 
 const gcs = storage({
   projectId: 'api-project-88418002742',
-  keyFilename: './gc-auth.json'
+  keyFilename: './API Project-52028a9694cc.json'
 });
 let ImgUpload = {};
 
