@@ -48,11 +48,12 @@ module.exports = function (router) {
     if(req.file && req.file.cloudStoragePublicUrl){
     async.waterfall([
       function (callback) {
+        var loc = [parseFloat(req.body.latitude), parseFloat(req.body.longitude)];
         var new_post = new Post({
           body: req.body.postBody,
           blob: req.file.cloudStoragePublicUrl,
           owner: req.body.owner,
-          location: [parseFloat(req.body.latitude), parseFloat(req.body.longitude)]
+          location: loc
         });
 
         new_post.save(function (err) {
